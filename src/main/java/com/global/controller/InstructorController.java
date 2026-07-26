@@ -1,0 +1,68 @@
+package com.global.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.global.DTO.InstructorDTO;
+import com.global.Service.InstructorService;
+import com.global.entity.Instructor;
+
+import jakarta.validation.Valid;
+
+@Validated
+@RequestMapping("/instructor")
+@RestController
+public class InstructorController {
+	@Autowired
+	InstructorService instructorService;
+	
+	
+	@PostMapping("/insert")
+	public void insert(@Valid @RequestBody Instructor instructor) {
+		instructorService.insert(instructor);
+	}
+	
+	@GetMapping("/findAll")
+	public ResponseEntity<?> findAll(@RequestParam int pageNum,@RequestParam int pageSize,@RequestParam String colSort ,@RequestParam boolean isASC){
+		return ResponseEntity.ok(instructorService.findAll(pageNum, pageSize, colSort, isASC));
+	}
+	
+	@GetMapping("/findById/{id}")
+	public ResponseEntity<?> findById(@PathVariable Long id) {
+		return  ResponseEntity.ok(instructorService.findById(id));
+	}
+	
+	@DeleteMapping("/deleteById/{id}")
+	public void deleteById(@PathVariable Long id) {
+		instructorService.deleteById(id);
+	}
+	
+	@PutMapping("/update")
+	public void update(@Valid @RequestBody InstructorDTO DTO) {
+		instructorService.update(DTO);
+	}
+	
+	@GetMapping("/search")
+	public List <Instructor> search(@RequestParam String name ,@RequestParam String email) {
+		return instructorService.search(name, email);	
+	}
+	
+	
+	
+	
+	
+	
+
+}

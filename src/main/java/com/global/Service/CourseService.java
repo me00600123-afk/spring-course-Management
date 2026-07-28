@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,6 +40,7 @@ public class CourseService {
 	CourseSearch search;
 	
 	
+	@CacheEvict(value = "course" , allEntries = true)
 	public Course insert(Course course) {
 		Optional<Instructor> entity = instructorRepo.findById(course.getInstructor().getId());
 		if(!entity.isPresent()) {
@@ -45,6 +49,7 @@ public class CourseService {
 		return courseRepo.save(course);
 	}
 	
+	@Cacheable(value = "course" , key = "#pageNum + '-' + #pageSize + '-' + #colName + '-' + #isASC")
 	public PageResponse<Course> findAll(int pageNum,int pageSize,String colName,boolean isASC) {
 		Sort sort = Sort.by(isASC? Direction.ASC : Direction.DESC ,colName);
 		Pageable pageable =PageRequest.of(pageNum, pageSize, sort);
@@ -52,6 +57,7 @@ public class CourseService {
 		return PageResponse.from(page);
 	}
 	
+	@Cacheable(value = "course" , key = "#id")
 	public Course findById(Long id) {
 		Optional<Course> course = courseRepo.findById(id);
 		if(!course.isPresent()) {
@@ -64,13 +70,15 @@ public class CourseService {
 		return course.get();
 	}
 	
-	
-	public void update(CourseDTO course) {
+	@CachePut(value = "course",key = "#course.id")
+	public Course update(CourseDTO course) {
 		Course entity = this.findById(course.getId());
 		courseMapper.updateDTO(course, entity);
-		courseRepo.save(entity);
+		return courseRepo.save(entity);
 	}
 	
+	
+	@CacheEvict(value = "course" , allEntries = true)
 	public void delete(Long id) {
 		
 		Optional<Course> course = courseRepo.findById(id);
@@ -84,7 +92,7 @@ public class CourseService {
 		courseRepo.deleteById(id);
 		
 	}
-	
+	@Cacheable(value = "course", key = "#title + '-' + #level + '-' + #status + '-' + #minPrice + '-' + #maxPrice + '-' + #description")
 	public List<Course> search(String title,String level,String status,Long minPrice , Long maxPrice,String description){
 		Specification<Course> spec = Specification.unrestricted();
 		if(title != null && !title.isBlank()) {

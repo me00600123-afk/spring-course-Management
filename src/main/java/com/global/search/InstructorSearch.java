@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import com.global.entity.Instructor;
 
 @Component
-public class Search{
+public class InstructorSearch{
 	
 	public static Specification<Instructor> searchByName(String name){
 		return (root, query, cb) ->

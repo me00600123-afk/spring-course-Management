@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.core.annotation.MergedAnnotations.Search;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,17 +36,19 @@ public class InstructorService {
 	@Autowired
 	InstructorSearch search;
 	
+	@CacheEvict(value = "instructor" , allEntries = true)
 	public void insert(Instructor instructor) {
 		instructorRepo.save(instructor);
 	}
 	
+	@Cacheable(value = "instructor" , key = "#pageNum +'-'+#pageSize +'-'+#colSort+'-'+#isASC")
 	public Page<Instructor> findAll(int pageNum,int pageSize, String colSort , boolean isASC){
 		Sort sort = Sort.by(isASC? Direction.ASC:Direction.DESC ,colSort);
 		Pageable page = PageRequest.of(pageNum,pageSize,sort);
 		return instructorRepo.findAll(page);
 	}
 	
-	
+	@Cacheable(value = "instructor" , key = "#id")
 	public Instructor findById(Long id){
 		 Optional<Instructor> entity = instructorRepo.findById(id);
 		 if(!entity.isPresent()) {
@@ -55,6 +59,7 @@ public class InstructorService {
 		 return instructorRepo.findById(id).get();
 	}
 	
+	@CacheEvict(value = "instructor" , allEntries = true)
 	public void deleteById(Long id) {
 		 Optional<Instructor> entity = instructorRepo.findById(id);
 		 if(!entity.isPresent()) {
@@ -65,13 +70,14 @@ public class InstructorService {
 		  instructorRepo.deleteById(id);;
 	}
 	
+	@CachePut(value = "instructor" , key = "#DTO.id")
 	public void update(InstructorDTO DTO) {
 		Instructor entity = this.findById(DTO.getId());
 		mapper.updateDTO(DTO, entity);
 		instructorRepo.save(entity);
 	}
 	
-	
+	@Cacheable(value = "instructor" , key = "#name +'-'+#email")
 	public List <Instructor> search(String name , String email) {
 		Specification<Instructor> spec =Specification.unrestricted();
 		if( name!= null && !name.isBlank() ) {

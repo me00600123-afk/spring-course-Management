@@ -11,7 +11,7 @@ public class CourseAOP {
 	Logger log = LoggerFactory.getLogger(CourseAOP.class);
 	
 	
-	@Around("excecution(* com.global.Service.*.*(..))")
+	@Around("annotation (com.global.annotation.LogExecution)")
 	public void methodExecutionTime(ProceedingJoinPoint pjp) throws Throwable {
 		Long start = System.currentTimeMillis();
 		Object execute = pjp.proceed();

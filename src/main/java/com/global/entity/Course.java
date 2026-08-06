@@ -28,10 +28,27 @@ import jakarta.validation.constraints.Size;
 @EntityListeners(AuditingEntityListener.class)
 public class Course {
 	
+	public Course() {
+		super();
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	public Course(@NotBlank String title, @Size(max = 500) String description, @Positive Long price,
+			Long durationInHours, Level level, @Positive Long maxStudents, Status status, Instructor instructor) {
+		super();
+		this.title = title;
+		this.description = description;
+		this.price = price;
+		this.durationInHours = durationInHours;
+		this.level = level;
+		this.maxStudents = maxStudents;
+		this.status = status;
+		this.instructor = instructor;
+	}
+
 	@NotBlank
 	private String title;
 	

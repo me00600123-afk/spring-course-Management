@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import com.global.DTO.InstructorDTO;
 import com.global.Repo.InstructorRepo;
+import com.global.annotation.LogExecution;
 import com.global.entity.Instructor;
 import com.global.exception.NotFoundException;
 import com.global.mapper.InstructorMapper;
@@ -41,6 +42,7 @@ public class InstructorService {
 		instructorRepo.save(instructor);
 	}
 	
+	@LogExecution
 	@Cacheable(value = "instructor" , key = "#pageNum +'-'+#pageSize +'-'+#colSort+'-'+#isASC")
 	public Page<Instructor> findAll(int pageNum,int pageSize, String colSort , boolean isASC){
 		Sort sort = Sort.by(isASC? Direction.ASC:Direction.DESC ,colSort);
@@ -48,13 +50,12 @@ public class InstructorService {
 		return instructorRepo.findAll(page);
 	}
 	
+	@LogExecution
 	@Cacheable(value = "instructor" , key = "#id")
 	public Instructor findById(Long id){
 		 Optional<Instructor> entity = instructorRepo.findById(id);
 		 if(!entity.isPresent()) {
-			 String[] msg = {id.toString()};
-			 String message = messageSource.getMessage("id.not.found",msg, LocaleContextHolder.getLocale());
-			 throw new NotFoundException(message);
+			 throw new NotFoundException("Invalid id => " + id);
 		 }
 		 return instructorRepo.findById(id).get();
 	}
@@ -65,7 +66,7 @@ public class InstructorService {
 		 if(!entity.isPresent()) {
 			 String[] msg = {id.toString()};
 			 String message = messageSource.getMessage("id.not.found",msg,LocaleContextHolder.getLocale());
-			 throw new NotFoundException(message);
+			 throw new NotFoundException("Invalid id => " + id);
 		 }
 		  instructorRepo.deleteById(id);;
 	}
@@ -92,9 +93,6 @@ public class InstructorService {
 		
 		
 	}
-	
-	
-	
 	
 
 }

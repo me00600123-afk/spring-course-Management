@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,8 +44,8 @@ public class CourseController {
 			@ApiResponse(responseCode = "404" , description = "violation validation",content = @Content)
 	})
 	@PostMapping("/insert")
+	@PreAuthorize("hasRole('ADIMN')")
 	public Course insert(@Valid @RequestBody Course course) {
-
 		return courseService.insert(course);
 	}
 	
@@ -72,12 +73,14 @@ public class CourseController {
 	
 	@Operation(summary = "update course")
 	@PutMapping("/update")
+	@PreAuthorize("hasRole('ADIMN')")
 	public void update(@RequestBody CourseDTO course) {
 		courseService.update(course);
 	}
 	
 	@Operation(summary = "delete by id")
 	@DeleteMapping("/delete/{id}")
+	@PreAuthorize("hasRole('ADIMN')")
 	public void delete(@PathVariable Long id) {
 		courseService.delete(id);
 

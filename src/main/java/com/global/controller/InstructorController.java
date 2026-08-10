@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,6 +43,7 @@ public class InstructorController {
 			
 	})
 	@PostMapping("/insert")
+	@PreAuthorize("hasRole('ADIMN')")
 	public void insert(@Valid @RequestBody Instructor instructor) {
 		instructorService.insert(instructor);
 	}
@@ -59,12 +61,14 @@ public class InstructorController {
 
 	@Operation(summary = "delete by id, id must be valid")
 	@DeleteMapping("/deleteById/{id}")
+	@PreAuthorize("hasRole('ADIMN')")
 	public void deleteById(@PathVariable Long id) {
 		instructorService.deleteById(id);
 	}
 
 	@Operation(summary = "update instructor")
 	@PutMapping("/update")
+	@PreAuthorize("hasRole('ADIMN')")
 	public void update(@Valid @RequestBody InstructorDTO DTO) {
 		instructorService.update(DTO);
 	}

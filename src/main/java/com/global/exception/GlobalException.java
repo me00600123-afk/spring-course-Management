@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -29,6 +30,11 @@ public class GlobalException {
 		}
 		ExceptionAttribute exceptionAttribute = new ExceptionAttribute(errorAttribute);
 		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(exceptionAttribute);
+	}
+	@ExceptionHandler(ExpiryRefreshTokenException.class)
+	public ResponseEntity<?> expiryRefreshTokenException(ExpiryRefreshTokenException exception){
+		ExceptionAttribute message = new ExceptionAttribute(exception.getLocalizedMessage(),Arrays.asList(exception.getMessage()));
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 	}
 
 }

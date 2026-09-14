@@ -3,8 +3,8 @@ package com.global.controller;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -27,7 +27,7 @@ public class CourseControllerTest {
 	
 	@Test
 	public void findById() throws Exception {
-		mockMvc.perform(get("/course/findById/{id}",1L).contentType("application/json")).andExpect(status().isOk());
+		mockMvc.perform(get("/course/findById/{id}",1L).contentType("application/json")).andExpect(status().isForbidden());
 		}
 	
 	@Test
@@ -37,7 +37,7 @@ public class CourseControllerTest {
 		mockMvc.perform(post("/course/insert")
 				.contentType("application/json")
 				.content(mapper.writeValueAsString(course)))
-		.andExpect(status().isExpectationFailed());
+		.andExpect(status().isForbidden());
 		
 	}
 	

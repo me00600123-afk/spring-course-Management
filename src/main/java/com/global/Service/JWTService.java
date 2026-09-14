@@ -3,19 +3,19 @@ package com.global.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-
 import javax.crypto.SecretKey;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import io.swagger.v3.oas.annotations.servers.Server;
+
+
 @Service
 public class JWTService {
+	
+	
 	@Value("${jwt.secret}")
 	private String key;
 	@Value("${jwt.expiration}")

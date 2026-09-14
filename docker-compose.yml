@@ -1,0 +1,18 @@
+services:
+  app:
+    build: .
+    container_name: course-management
+    ports:
+     - "8080:8080"
+  sql:
+    image: mysql:9.2
+    restart: always
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+
+  redis:
+    image: redis:latest	
+volumes:
+  mysql-data:
